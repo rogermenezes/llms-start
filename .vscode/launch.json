@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Train tiny GPT",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "llms_start.from_scratch.train",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Model Inference",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "llms_start.from_scratch.inference",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        }
+    ]
+}
