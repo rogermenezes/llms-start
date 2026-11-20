@@ -2,6 +2,7 @@
 import tiktoken
 
 from llms_start.from_scratch import small_model
+from llms_start.from_scratch.data_loader import create_dataloader_v1
 from llms_start.from_scratch.data_processing import generate_text_simple, text_to_token_ids, token_ids_to_text
 
 GPT_CONFIG_124M = {
@@ -19,22 +20,15 @@ print("model architecture: {}".format(start_model))
 
 print("starting training: vocab size: {}".format(GPT_CONFIG_124M["vocab_size"]))
 
-small_text = "This is a small text corpus for training a GPT model from scratch."
-tokenizer = tiktoken.get_encoding("gpt2")
+file_path = "examples/the-verdict.txt"  # Path to the text file
+with open(file_path, "r", encoding="utf-8") as file:
+    text_data = file.read()
 
-token_ids = text_to_token_ids(small_text, tokenizer)  # Convert text to token IDs
-print("Token IDs: {}".format(token_ids))
+print("Text data loaded from {}: {}".format(file_path, text_data[:100]))  # Print first 100 characters
 
-decoded_text = tokenizer.decode(token_ids.squeeze(0).tolist())  # Convert token IDs back to text
-print("Decoded text: {}".format(decoded_text))
+dataloader = create_dataloader_v1(text_data, batch_size=8, max_length=4, stride=4, shuffle=False)
 
-start_model.eval()  # Set the model to evaluation mode
-
-token_ids = generate_text_simple(
-    model=start_model,
-    idx=text_to_token_ids(small_text, tokenizer),
-    max_new_tokens=10,
-    context_size=GPT_CONFIG_124M["context_length"]
-)
-
-print("Output text:\n", token_ids_to_text(token_ids, tokenizer))
+data_iter = iter(dataloader)
+inputs, targets = next(data_iter)
+print("Inputs:\n", inputs)
+print("\nTargets:\n", targets)
